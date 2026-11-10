@@ -1,33 +1,23 @@
-# Trabajo-Final---Nave-Espacial
-Centro de Mando Galáctico: interfaz multimodal (voz y gestos) en Streamlit para controlar una nave espacial simulada en Wokwi (ESP32) por MQTT.
-
-
 # 🚀 Centro de Mando Galáctico
 
-Simulación de robótica y astronomía con **control sin contacto**. El usuario es el
-capitán de una nave espacial: prepara los sistemas, decide si despega o no, y
-responde a los peligros del espacio (meteoritos, sobrecalentamiento, falta de
-combustible y emergencias).
+Interfaz multimodal (voz y gestos) en **Streamlit** para controlar una nave espacial simulada en **Wokwi** (ESP32) por **MQTT**.
+Con la temperatura del reactor por encima de 30 °C aparecen meteoritos en el visor; al activar los escudos desaparecen y se apaga la alerta.
 
-El proyecto combina una interfaz web (**Streamlit**) y una versión alternativa
-(**Processing**) con un **ESP32 simulado en Wokwi**, conectados por **MQTT**.
+## Estructura
+- `app.py`, `vistas/`, `utils/`: app Streamlit (Puente de Mando por voz, Sala de Máquinas por gestos).
+- `web/`: animación del visor y captura de voz/gestos (Web Speech API y MediaPipe).
+- `wokwi/`: `sketch.ino`, `diagram.json`, `libraries.txt` (ESP32, DHT22, servo, LEDs, buzzer, HC-SR04).
+- `simulador_esp32.py`: simula el ESP32 para probar sin Wokwi.
 
-## Interacción multimodal
-- 🎙️ **Voz** (Puente de Mando): órdenes como "activar escudos" o "iniciar despegue".
-- 🖐️ **Gestos** (Sala de Máquinas): control de motores y escudos con la mano, usando la cámara.
-- ⌨️ Texto y controles manuales como respaldo.
+## Ejecutar
+```
+pip install -r requirements.txt
+streamlit run app.py
+```
+Opcional (sin Wokwi): `python simulador_esp32.py`
 
-## Qué ocurre en Wokwi
-Con la temperatura del reactor (DHT22) por encima de 30 °C aparecen meteoritos en la
-interfaz y titilan el LED rojo y el buzzer. Al activar los escudos, los meteoritos
-desaparecen y se apaga la alerta. También se abren y cierran compuertas (servo) y se
-verifica el despegue (escudos, compuerta cerrada y combustible suficiente).
+## MQTT (broker.hivemq.com:1883)
+`NaveEspacial2026/comandos` (app → ESP32) · `NaveEspacial2026/telemetria` (ESP32 → app) · `NaveEspacial2026/entrada` (voz y gestos)
 
-## Tecnologías
-Streamlit · Processing · ESP32 (Arduino C++) · Wokwi · MQTT (HiveMQ) · MediaPipe · Web Speech API
-
-## Propósito
-Es una simulación educativa y un modelo de interfaz para personas que necesitan dar
-órdenes sin depender del tacto (movilidad reducida o manos ocupadas).
-
-> Proyecto final de Interfaces Multimodales · Simón · 2026
+Comandos de voz: activar escudos · abrir/cerrar compuerta · alerta roja · iniciar despegue · abortar misión.
+Gestos: 👍 escudos · 🤘 despegue · 🖐 compuerta · ✊ motores 0 % · 1-4 dedos = 25-100 %.
