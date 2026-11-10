@@ -41,7 +41,7 @@ def on_message(c, u, m):
     if "emergencia" in d: E["emergencia"] = bool(d["emergencia"])  # solo en el simulador
     c.publish(P + "/telemetria", json.dumps(telemetria()))
 
-c = mqtt.Client(); c.on_connect = on_connect; c.on_message = on_message
-c.connect("broker.hivemq.com", 1883); c.loop_start()
+c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1) if hasattr(mqtt, "CallbackAPIVersion") else mqtt.Client()
+c.on_connect = on_connect; c.on_message = on_message
 while True:
     c.publish(P + "/telemetria", json.dumps(telemetria())); time.sleep(1)
