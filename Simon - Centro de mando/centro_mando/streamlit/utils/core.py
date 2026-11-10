@@ -35,7 +35,7 @@ def registrar(S, c, cmd, resp):
 @st.cache_resource
 def nucleo():
     S = {"tele": {}, "log": [], "oido": "—", "resp": "Esperando órdenes"}
-    c = mqtt.Client()
+    c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1) if hasattr(mqtt, "CallbackAPIVersion") else mqtt.Client()
     c.on_connect = lambda cl, u, f, rc: cl.subscribe([(P + "/telemetria", 0), (P + "/entrada", 0)])
     def on_message(cl, u, m):
         try: d = json.loads(m.payload)
